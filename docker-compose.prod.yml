@@ -1,0 +1,16 @@
+services:
+  tg-userbot:
+    image: YOUR_DOCKER_USERNAME/tg-userbot:latest
+    platform: linux/amd64
+    container_name: tg-userbot
+    network_mode: host
+    env_file:
+      - .env
+    environment:
+      - TG_API_ID=${TG_API_ID}
+      - TG_API_HASH=${TG_API_HASH}
+      - TG_SESSION=${TG_SESSION}
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+      - GOOGLE_MODEL=${GOOGLE_MODEL}
+      - GOOGLE_TEXT_MODEL=${GOOGLE_TEXT_MODEL}
+    restart: unless-stopped

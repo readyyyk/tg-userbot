@@ -1,0 +1,21 @@
+services:
+  tg-userbot:
+    build: .
+    platform: linux/amd64
+    container_name: tg-userbot
+    network_mode: host
+    env_file:
+      - .env
+    environment:
+      - TG_API_ID=${TG_API_ID}
+      - TG_API_HASH=${TG_API_HASH}
+      - TG_SESSION=${TG_SESSION}
+      - TG_PHONE_NUMBER=${TG_PHONE_NUMBER}
+      - TG_PASSWORD=${TG_PASSWORD}
+      - TG_PHONE_CODE=${TG_PHONE_CODE}
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+      - GOOGLE_MODEL=${GOOGLE_MODEL}
+      - GOOGLE_TEXT_MODEL=${GOOGLE_TEXT_MODEL}
+    volumes:
+      - ./voices:/app/voices
+    restart: unless-stopped
