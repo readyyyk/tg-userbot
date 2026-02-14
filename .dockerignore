@@ -1,0 +1,11 @@
+node_modules
+pnpm-lock.yaml
+npm-debug.log
+.DS_Store
+voices
+.env
+.env.*
+.git
+dist/
+*.md
+LICENSE

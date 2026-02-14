@@ -1,0 +1,34 @@
+{
+	"name": "tg-userbot",
+	"version": "1.0.0",
+	"description": "Telegram userbot with voice transcription and AI commands powered by Google GenAI",
+	"license": "MIT",
+	"author": "readyyyk",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/readyyyk/tg-userbot"
+	},
+	"type": "module",
+	"main": "dist/index.js",
+	"scripts": {
+		"dev": "tsx watch src/index.ts",
+		"start": "tsx src/index.ts",
+		"typecheck": "tsc --noEmit",
+		"deploy": "scripts/deploy.sh",
+		"d": "pnpm run deploy"
+	},
+	"packageManager": "pnpm@10.12.4",
+	"dependencies": {
+		"@google/genai": "1.22.0",
+		"@t3-oss/env-core": "^0.13.10",
+		"dotenv": "16.4.5",
+		"p-retry": "6.2.0",
+		"telegram": "2.22.2",
+		"zod": "^4.3.6"
+	},
+	"devDependencies": {
+		"@types/node": "22.7.4",
+		"tsx": "4.20.4",
+		"typescript": "5.8.3"
+	}
+}
