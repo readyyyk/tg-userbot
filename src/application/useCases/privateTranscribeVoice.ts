@@ -1,18 +1,18 @@
 import type { Api, TelegramClient } from "telegram";
 import type { Transcriber } from "@/domain/transcriber";
 import { MESSAGES } from "@/messages";
-import { isVoiceMessage, replyTo } from "@/telegram/utils";
-import { saveVoiceFromMessage } from "@/telegram/voice";
+import { isVoiceOrVideoNote, replyTo } from "@/telegram/utils";
+import { saveAudioFromMessage } from "@/telegram/voice";
 
 export async function privateTranscribeVoice(
     ctx: { client: TelegramClient; message: Api.Message },
     deps: { transcriber: Transcriber },
 ): Promise<void> {
     const { client, message } = ctx;
-    if (!isVoiceMessage(message)) return;
+    if (!isVoiceOrVideoNote(message)) return;
     try {
-        const filePath = await saveVoiceFromMessage(client, message);
-        const text = await deps.transcriber.transcribeOggFile(filePath, { language: "Russian" });
+        const filePath = await saveAudioFromMessage(client, message);
+        const text = await deps.transcriber.transcribeAudio(filePath);
         const cleaned = text.trim();
         if (cleaned) {
             await replyTo(client, message, `Расшифровка:\n${cleaned}`);

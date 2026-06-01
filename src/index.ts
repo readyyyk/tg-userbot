@@ -2,8 +2,8 @@ import "dotenv/config";
 import { TelegramClient } from "telegram";
 import { StringSession } from "telegram/sessions";
 import { env } from "@/env";
-import { GoogleGenAi } from "@/impl/google/aiGoogle";
-import { GoogleGenAiTranscriber } from "@/impl/google/transcriberGoogle";
+import { GroqAi } from "@/impl/groq/aiGroq";
+import { GroqTranscriber } from "@/impl/groq/transcriberGroq";
 import { TgUserbot } from "@/presentation/bot";
 import { createHandlers } from "@/presentation/handlers";
 
@@ -42,13 +42,14 @@ async function main() {
 		console.log(exportedSession);
 	}
 
-	const googleTextModel = env.GOOGLE_TEXT_MODEL ?? env.GOOGLE_MODEL;
-
-	const transcriber = new GoogleGenAiTranscriber({
-		apiKey: env.GOOGLE_API_KEY,
-		model: env.GOOGLE_MODEL,
+	const transcriber = new GroqTranscriber({
+		apiKey: env.GROQ_API_KEY,
+		model: env.WHISPER_MODEL,
+		// No default language → Whisper auto-detects per message (multilingual).
+		// Set WHISPER_LANGUAGE (ISO-639-1, e.g. "ru") to pin a single language.
+		defaultLanguage: env.WHISPER_LANGUAGE,
 	});
-	const ai = new GoogleGenAi({ apiKey: env.GOOGLE_API_KEY, model: googleTextModel });
+	const ai = new GroqAi({ apiKey: env.GROQ_API_KEY, model: env.GROQ_TEXT_MODEL });
 	const handlers = createHandlers({
 		transcriber,
 		ai,

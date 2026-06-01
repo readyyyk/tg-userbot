@@ -2,8 +2,8 @@ import type { Api, TelegramClient } from "telegram";
 import type { AI } from "@/domain/ai";
 import type { Transcriber } from "@/domain/transcriber";
 import { MESSAGES } from "@/messages";
-import { getRepliedMessage, isVoiceMessage, replyTo } from "@/telegram/utils";
-import { saveVoiceFromMessage } from "@/telegram/voice";
+import { getRepliedMessage, isVoiceOrVideoNote, replyTo } from "@/telegram/utils";
+import { saveAudioFromMessage } from "@/telegram/voice";
 
 const buildTldrPrompt = (text: string): string => {
 	return `Твоя задача — преобразовать большой объём текста в краткие, но информативные пункты.
@@ -76,14 +76,10 @@ export async function commandTldr(
 
 		let textToProcess: string;
 
-		// Handle voice messages
-		if (isVoiceMessage(replied)) {
-			const filePath = await saveVoiceFromMessage(client, replied);
-			textToProcess = (
-				await deps.transcriber.transcribeOggFile(filePath, {
-					language: "Russian",
-				})
-			).trim();
+		// Handle voice and round video (circle) messages
+		if (isVoiceOrVideoNote(replied)) {
+			const filePath = await saveAudioFromMessage(client, replied);
+			textToProcess = (await deps.transcriber.transcribeAudio(filePath)).trim();
 		} else {
 			// Handle text messages
 			textToProcess = replied.message?.trim() || "";

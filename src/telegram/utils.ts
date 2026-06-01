@@ -15,6 +15,56 @@ export function isVoiceMessage(message: Api.Message | undefined): boolean {
     return mime === "audio/ogg";
 }
 
+const TRANSCRIBABLE_MIME_TYPES = new Set([
+    "audio/mp4",
+    "audio/x-m4a",
+    "audio/m4a",
+    "audio/mpeg",
+    "audio/mp3",
+    "audio/wav",
+    "audio/flac",
+    "audio/aac",
+]);
+
+export function isAudioDocument(message: Api.Message | undefined): boolean {
+    if (!message) return false;
+    const media = message.media;
+    if (!(media instanceof Api.MessageMediaDocument)) return false;
+    const document = media.document;
+    if (!(document instanceof Api.Document)) return false;
+    const mime = document.mimeType?.toLowerCase() ?? "";
+    return TRANSCRIBABLE_MIME_TYPES.has(mime);
+}
+
+// Telegram "video message" / circle: a round video note (video/mp4 with audio).
+// Groq Whisper extracts the audio track directly from the mp4.
+export function isVideoNote(message: Api.Message | undefined): boolean {
+    if (!message) return false;
+    const media = message.media;
+    if (!(media instanceof Api.MessageMediaDocument)) return false;
+    const document = media.document;
+    if (!(document instanceof Api.Document)) return false;
+    return (
+        document.attributes?.some(
+            (attr: Api.TypeDocumentAttribute) =>
+                attr instanceof Api.DocumentAttributeVideo && Boolean(attr.roundMessage),
+        ) ?? false
+    );
+}
+
+// Voice note or round video note — both carry speech we can transcribe.
+export function isVoiceOrVideoNote(message: Api.Message | undefined): boolean {
+    return isVoiceMessage(message) || isVideoNote(message);
+}
+
+export function getDocumentMimeType(message: Api.Message): string | null {
+    const media = message.media;
+    if (!(media instanceof Api.MessageMediaDocument)) return null;
+    const document = media.document;
+    if (!(document instanceof Api.Document)) return null;
+    return document.mimeType?.toLowerCase() ?? null;
+}
+
 export function isPrivatePeer(peer: Api.TypePeer | undefined): boolean {
     return Boolean(peer && peer instanceof Api.PeerUser);
 }

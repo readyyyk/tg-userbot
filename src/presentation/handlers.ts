@@ -8,7 +8,7 @@ import { commandTranscribeVoice } from "@/application/useCases/commandTranscribe
 import { privateTranscribeVoice } from "@/application/useCases/privateTranscribeVoice";
 import type { AI } from "@/domain/ai";
 import type { Transcriber } from "@/domain/transcriber";
-import { getPeerId, isPrivatePeer, isVoiceMessage } from "@/telegram/utils";
+import { getPeerId, isPrivatePeer, isVoiceOrVideoNote } from "@/telegram/utils";
 
 export type Handler = Array<{
 	name: string;
@@ -45,9 +45,9 @@ export function createHandlers(deps: {
 }): Handler {
 	return [
 		{
-			name: "Private auto voice",
+			name: "Private auto voice/video",
 			isTriggered: async ({ message }) => {
-				if (!isVoiceMessage(message)) return false;
+				if (!isVoiceOrVideoNote(message)) return false;
 				const peerId = getPeerId(message);
 				if (peerId && deps.transcribeDisabledPeerIds.has(peerId)) return false;
 				return isPrivatePeer(message.peerId) || (!!peerId && deps.autoTranscribePeerIds.has(peerId));

@@ -1,8 +1,9 @@
 export type TranscribeOptions = {
     prompt?: string;
     language?: string;
+    mimeType?: string;
 };
 
 export interface Transcriber {
-    transcribeOggFile(filePath: string, options?: TranscribeOptions): Promise<string>;
+    transcribeAudio(filePath: string, options?: TranscribeOptions): Promise<string>;
 }

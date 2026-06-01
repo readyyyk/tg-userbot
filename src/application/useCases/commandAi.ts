@@ -2,8 +2,8 @@ import type { Api, TelegramClient } from "telegram";
 import type { AI } from "@/domain/ai";
 import type { Transcriber } from "@/domain/transcriber";
 import { MESSAGES } from "@/messages";
-import { getRepliedMessage, isVoiceMessage, replyTo } from "@/telegram/utils";
-import { saveVoiceFromMessage } from "@/telegram/voice";
+import { getRepliedMessage, isVoiceOrVideoNote, replyTo } from "@/telegram/utils";
+import { saveAudioFromMessage } from "@/telegram/voice";
 
 function parseAiPrompt(text: string | undefined): string {
     const raw = (text ?? "").trim();
@@ -40,9 +40,9 @@ export async function commandAi(
 
         let finalPrompt = userPrompt;
         if (replied) {
-            if (isVoiceMessage(replied)) {
-                const filePath = await saveVoiceFromMessage(client, replied);
-                const transcript = (await deps.transcriber.transcribeOggFile(filePath, { language: "Russian" })).trim();
+            if (isVoiceOrVideoNote(replied)) {
+                const filePath = await saveAudioFromMessage(client, replied);
+                const transcript = (await deps.transcriber.transcribeAudio(filePath)).trim();
                 finalPrompt = buildPrompt({ userPrompt, replied, transcript });
             } else {
                 finalPrompt = buildPrompt({ userPrompt, replied });

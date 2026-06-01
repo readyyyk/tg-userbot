@@ -1,7 +1,7 @@
 {
 	"name": "tg-userbot",
 	"version": "1.0.0",
-	"description": "Telegram userbot with voice transcription and AI commands powered by Google GenAI",
+	"description": "Telegram userbot with voice/video transcription and AI commands powered by Groq (Whisper + compound)",
 	"license": "MIT",
 	"author": "readyyyk",
 	"repository": {
@@ -14,12 +14,13 @@
 		"dev": "tsx watch src/index.ts",
 		"start": "tsx src/index.ts",
 		"typecheck": "tsc --noEmit",
+		"secrets:pull": "rcli tool secrets pull",
+		"secrets:push": "rcli tool secrets push",
 		"deploy": "scripts/deploy.sh",
 		"d": "pnpm run deploy"
 	},
 	"packageManager": "pnpm@10.12.4",
 	"dependencies": {
-		"@google/genai": "1.22.0",
 		"@t3-oss/env-core": "^0.13.10",
 		"dotenv": "16.4.5",
 		"p-retry": "6.2.0",
